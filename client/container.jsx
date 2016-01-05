@@ -4,7 +4,7 @@ ChatContainer = React.createClass({
 
 	getMeteorData(){
 		return{
-			currentActiveUsers:ActiveUsers.find({}).fetch()
+			currentActiveUsers:ActiveUsers.find({}).fetch(),
 		};
 	},
 
@@ -12,6 +12,18 @@ ChatContainer = React.createClass({
 		return this.data.currentActiveUsers.map((user) => {
 			return <User key={user._id} user={user} />
 		}); 
+	},
+
+	renderCommunicationHanger(){
+		return <CommunicatorHanger />;
+	},
+
+	renderMessageContainer(){
+
+	},
+
+	renderTweetBox(){
+
 	},
 
 	render(){
@@ -23,6 +35,11 @@ ChatContainer = React.createClass({
 				  		<ul>
 				  			{this.getCurrentActiveUsers()}
 				  		</ul> 
+				  	</div>
+				  	<div className="col-xs-11 col-md-10 col-lg-9 columnBorder">
+			  			{this.renderCommunicationHanger()}
+			  			{this.renderMessageContainer()}
+			  			{this.renderTweetBox()}
 				  	</div>
 				  </div>
 				</div>
