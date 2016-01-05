@@ -1,4 +1,8 @@
 CommunicatorHanger = React.createClass({
+	renderCommunicationTab(){
+		
+	},
+	
 	render(){
 		return(
 			<div className="well">
