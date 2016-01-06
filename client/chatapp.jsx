@@ -1,4 +1,5 @@
 Meteor.subscribe("activeUsers");
+Meteor.subscribe("privateMessageHangers");
 let lastUser = null;
 Meteor.startup(function(){
 	ReactDOM.render(<Navigation />,document.getElementById("navigation"));
