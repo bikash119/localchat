@@ -26,11 +26,23 @@ CommunicatorHanger = React.createClass({
 });
 
 CommunicationTab = React.createClass({
+
+	renderMessageContainer(){
+		console.log("message handler");
+		ReactDOM.render(<MessageContainer /> , document.getElementById("messageContainer"));
+	},
+
 	render(){
 		return (		
-			<li role="presentation">
+			<li role="presentation" onClick={this.renderMessageContainer}>
 				<a href="#" aria-controls="home" role="tab" data-toggle="tab">{this.props.commTab}</a>
 			</li>
 			);
+	}
+});
+
+MessageContainer = React.createClass({
+	render(){
+		return ( <p>Message should appear here</p>);
 	}
 });

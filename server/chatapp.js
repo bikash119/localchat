@@ -34,3 +34,6 @@ Meteor.publish("activeUsers",function(){
 Meteor.publish("privateMessageHangers",function(){
 	return PrivateMessageHangers.find({});
 });
+Meteor.publish("messages",function(){
+	return Messages.find({});
+});

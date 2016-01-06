@@ -18,12 +18,7 @@ ChatContainer = React.createClass({
 		return <CommunicatorHanger />;
 	},
 
-	renderMessageContainer(){
-
-	},
-
 	renderTweetBox(){
-
 	},
 
 	render(){
@@ -38,7 +33,8 @@ ChatContainer = React.createClass({
 				  	</div>
 				  	<div className="col-xs-11 col-md-10 col-lg-9 columnBorder">
 			  			{this.renderCommunicationHanger()}
-			  			{this.renderMessageContainer()}
+			  			<div className="container" id="messageContainer">
+			  			</div>
 			  			{this.renderTweetBox()}
 				  	</div>
 				  </div>
@@ -47,4 +43,3 @@ ChatContainer = React.createClass({
 			);
 	}
 });
-
