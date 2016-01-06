@@ -3,8 +3,8 @@ CommunicatorHanger = React.createClass({
 	mixins: [ReactMeteorData],
 
 	getMeteorData(){
+		Meteor.subscribe("privateMessageHangers");
 		let privateCommunicator = PrivateMessageHangers.findOne({userId:Meteor.userId()});
-
 		return{
 			privateCommunicators:privateCommunicator.communicatingWith
 		};
