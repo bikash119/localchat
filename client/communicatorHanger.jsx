@@ -3,17 +3,25 @@ CommunicatorHanger = React.createClass({
 	mixins: [ReactMeteorData],
 
 	getMeteorData(){
-		Meteor.subscribe("privateMessageHangers");
+		let handle = Meteor.subscribe("privateMessageHangers");
 		let privateCommunicator = PrivateMessageHangers.findOne({userId:Meteor.userId()});
+		let communicatingWith = null;
+		if(privateCommunicator){
+			communicatingWith = privateCommunicator.communicatingWith;
+		}
 		return{
-			privateCommunicators:privateCommunicator.communicatingWith
+			privateCommunicators:communicatingWith,
+			handle : handle
 		};
 	},
 
 	renderCommunicationTabContainer(){
-		return this.data.privateCommunicators.map((comm) => {
-			return <CommunicationTab key={comm} commTab={comm}/>
-		});
+		if(this.data.handle.ready()){
+			return this.data.privateCommunicators.map((comm) => {
+				return <CommunicationTab key={comm} commTab={comm}/>
+			});	
+		}
+		
 	},
 
 	render(){
