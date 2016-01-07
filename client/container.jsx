@@ -5,7 +5,7 @@ ChatContainer = React.createClass({
 	getMeteorData(){
 		let handle = Meteor.subscribe("activeUsers");
 		return{
-			currentActiveUsers:ActiveUsers.find({}).fetch(),
+			currentActiveUsers:ActiveUsers.find({userId:{$ne:Meteor.userId()}}).fetch(),
 			handle:handle
 		};
 	},
@@ -36,7 +36,7 @@ ChatContainer = React.createClass({
 				  		</ul> 
 				  	</div>
 				  	<div className="col-xs-11 col-md-10 col-lg-9 columnBorder">
-			  			{/*this.renderCommunicationHanger()*/}
+			  			{this.renderCommunicationHanger()}
 			  			<div className="container" id="messageContainer">
 			  			</div>
 			  			{this.renderTweetBox()}

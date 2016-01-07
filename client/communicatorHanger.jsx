@@ -1,56 +1,56 @@
 CommunicatorHanger = React.createClass({
 
-	mixins: [ReactMeteorData],
-
+	mixins:[ReactMeteorData],
 	getMeteorData(){
-		let handle = Meteor.subscribe("privateMessageHangers");
-		let privateCommunicator = PrivateMessageHangers.findOne({userId:Meteor.userId()});
-		let communicatingWith = null;
-		if(privateCommunicator){
-			communicatingWith = privateCommunicator.communicatingWith;
+		let privateCommunicationSubscription = Meteor.subscribe("privateMessageHangers");
+		let privateComm = undefined;
+		if(privateCommunicationSubscription.ready()){
+			privateComm = PrivateMessageHangers.findOne({userId:Meteor.userId()});
 		}
 		return{
-			privateCommunicators:communicatingWith,
-			handle : handle
-		};
-	},
-
-	renderCommunicationTabContainer(){
-		if(this.data.handle.ready()){
-			return this.data.privateCommunicators.map((comm) => {
-				return <CommunicationTab key={comm} commTab={comm}/>
-			});	
+			privateComm : privateComm
 		}
-		
 	},
 
 	render(){
-		return(
-			<ul className="nav nav-tabs" role="tablist">
-				{this.renderCommunicationTabContainer()}
-			</ul>
-		);
-	}
-});
-
-CommunicationTab = React.createClass({
-
-	renderMessageContainer(){
-		console.log("message handler");
-		ReactDOM.render(<MessageContainer /> , document.getElementById("messageContainer"));
-	},
-
-	render(){
-		return (		
-			<li role="presentation" onClick={this.renderMessageContainer}>
-				<a href="#" aria-controls="home" role="tab" data-toggle="tab">{this.props.commTab}</a>
-			</li>
+		return (
+				<div className="container">
+					<ul className="nav nav-tabs" role="tablist">
+						{this.renderPrivateChatTabs()}
+					</ul>
+				</div>
 			);
+	},
+
+	renderPrivateChatTabs(){
+		if(this.data.privateComm){
+			let allCommunicators = this.data.privateComm.communicatingWith;
+			return allCommunicators.map((elem) => {return <ListItem key={elem} communicator={elem}/>})			
+		}
 	}
 });
 
-MessageContainer = React.createClass({
+ListItem = React.createClass({
+
+	getUserName(userId){
+		console.log(userId);
+		let user = Meteor.users.findOne({_id:userId});
+		if(user){
+			return {
+				username:user.emails[0].address
+			}
+		}else{
+			return {
+				username:userId
+			}
+		}
+	},
+
 	render(){
-		return ( <p>Message should appear here</p>);
+		return (
+				<li role="presentation">
+					<a href="#" role="tab" data-toggle="tab">{this.getUserName(this.props.communicator).username}</a>
+				</li>
+			);
 	}
 });

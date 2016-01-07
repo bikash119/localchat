@@ -1,6 +1,3 @@
-Meteor.subscribe("activeUsers");
-Meteor.subscribe("privateMessageHangers");
-Meteor.subscribe("messages");
 let lastUser = null;
 Meteor.startup(function(){
 	ReactDOM.render(<Navigation />,document.getElementById("navigation"));
@@ -11,6 +8,7 @@ Tracker.autorun(function(){
 	var userId=Meteor.userId();
     if(lastUser){
         Meteor.call("removeFromActiveUsers",lastUser._id);
+        Meteor.call("removeFromPrivateMessageHanger",lastUser._id);
     }
     lastUser=Meteor.user();
 });
