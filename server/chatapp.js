@@ -6,9 +6,25 @@ Accounts.onLogin(function(obj){
 	if(!activeEntity){
 		ActiveUsers.insert({userId:obj.user._id,activeOn:new Date(),username:obj.user.emails[0].address});
 	}
-	let privateMessageHangers = PrivateMessageHangers.findOne({userId:userId});
-	if(!privateMessageHangers){
-		Meteor.call("createPrivateMsgHanger","public",userId);
+	let privateMessageHanger = PrivateMessageHangers.findOne({userId:userId});
+	let publicUser = ActiveUsers.findOne({username:"public"});
+	if(!privateMessageHanger){
+		Meteor.call("createPrivateMsgHanger",publicUser,Meteor.userId());
+	}
+});
+
+Meteor.startup(function(){
+	let publicEmail = {
+		address:"public",
+		verified:true
+	}
+	if(Meteor.users.find().count() == 0){
+		Meteor.users.insert({createdAt:new Date(),emails:[publicEmail]});
+	} 
+	let publicUser = Meteor.users.findOne({emails:{$elemMatch:{address:"public"}}});
+	let publicActiveUser = ActiveUsers.findOne({username:"public"});
+	if(!publicActiveUser){
+		ActiveUsers.insert({userId:publicUser._id,activeOn:new Date(),username:publicUser.emails[0].address});
 	}
 });
 
@@ -23,11 +39,16 @@ Meteor.methods({
 
 	createPrivateMsgHanger:function(communicatingWith,loggedInUser){
 		let loggedInUserHanger = PrivateMessageHangers.findOne({userId:loggedInUser});
+		console.log(communicatingWith);
 		if(!loggedInUserHanger){
 			PrivateMessageHangers.insert({userId:loggedInUser,communicatingWith:[communicatingWith]});
 		}else{
 			let alreadyCommunicatingWith = Array.from(loggedInUserHanger.communicatingWith);
-			if (alreadyCommunicatingWith.indexOf(communicatingWith) == -1){
+			let filteredComm = alreadyCommunicatingWith.filter(function(elem){
+				console.log(elem.username + " == "+communicatingWith.username);
+				return elem.username == communicatingWith.username
+			});
+			if (filteredComm.length == 0){
 				PrivateMessageHangers.update({userId:loggedInUser},{$push :{communicatingWith:communicatingWith}});
 			}
 		}
