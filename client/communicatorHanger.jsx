@@ -23,16 +23,21 @@ CommunicatorHanger = React.createClass({
 	renderPrivateChatTabs(){
 		if(this.data.privateComm){
 			let allCommunicators = this.data.privateComm.communicatingWith;
-			return allCommunicators.map((elem) => {return <ListItem key={elem._id} communicator={elem}/>})			
+			return allCommunicators.map((elem) => {return <ListItem key={elem.userId} communicator={elem}/>})			
 		}
 	}
 });
 
 ListItem = React.createClass({
 
+	setActiveCommTab(){
+		console.log("Active commu with : "+this.props.communicator);
+		Session.set("currentlyCommnunicatingWith" ,this.props.communicator.userId);
+	},
+
 	render(){
 		return (
-				<li role="presentation">
+				<li role="presentation" onClick={this.setActiveCommTab}>
 					<a href="#" role="tab" data-toggle="tab">{this.props.communicator.username}</a>
 				</li>
 			);

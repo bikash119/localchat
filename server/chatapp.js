@@ -3,13 +3,18 @@ Accounts.onLogin(function(obj){
 	let userId = obj.user._id;
 
 	let activeEntity = ActiveUsers.findOne({userId:userId});
+	let user = {
+		userId : obj.user._id,
+		username: obj.user.emails[0].address,
+		email: obj.user.emails[0].address
+	}
 	if(!activeEntity){
-		ActiveUsers.insert({userId:obj.user._id,activeOn:new Date(),username:obj.user.emails[0].address});
+		ActiveUsers.insert({userId:obj.user._id,activeOn:new Date(),user:user});
 	}
 	let privateMessageHanger = PrivateMessageHangers.findOne({userId:userId});
-	let publicUser = ActiveUsers.findOne({username:"public"});
+	let publicUser = ActiveUsers.findOne({"user.username":"public"});
 	if(!privateMessageHanger){
-		Meteor.call("createPrivateMsgHanger",publicUser,Meteor.userId());
+		Meteor.call("createPrivateMsgHanger",publicUser.user,Meteor.userId());
 	}
 });
 
@@ -22,9 +27,14 @@ Meteor.startup(function(){
 		Meteor.users.insert({createdAt:new Date(),emails:[publicEmail]});
 	} 
 	let publicUser = Meteor.users.findOne({emails:{$elemMatch:{address:"public"}}});
-	let publicActiveUser = ActiveUsers.findOne({username:"public"});
+	let publicActiveUser = ActiveUsers.findOne({"user.username":"public"});
 	if(!publicActiveUser){
-		ActiveUsers.insert({userId:publicUser._id,activeOn:new Date(),username:publicUser.emails[0].address});
+		let user = {
+			userId : publicUser._id,
+			username: publicUser.emails[0].address,
+			email: publicUser.emails[0].address
+		}
+		ActiveUsers.insert({userId:publicUser._id,activeOn:new Date(),user:user});
 	}
 });
 
@@ -45,13 +55,28 @@ Meteor.methods({
 		}else{
 			let alreadyCommunicatingWith = Array.from(loggedInUserHanger.communicatingWith);
 			let filteredComm = alreadyCommunicatingWith.filter(function(elem){
-				console.log(elem.username + " == "+communicatingWith.username);
 				return elem.username == communicatingWith.username
 			});
 			if (filteredComm.length == 0){
 				PrivateMessageHangers.update({userId:loggedInUser},{$push :{communicatingWith:communicatingWith}});
 			}
 		}
+	},
+
+	createMessage(recievingUser,message){
+		let sender = Meteor.user();
+		let sendingUser = {
+			userId:sender._id,
+			username:sender.emails[0].address,
+			email:sender.emails[0].address
+		};
+		let reciever = Meteor.users.findOne({_id:recievingUser});
+		let recipient = {
+			userId:reciever._id,
+			username:reciever.emails[0].address,
+			email:reciever.emails[0].address
+		};
+		Messages.insert({sender:sendingUser,recipient:recipient,message:message,createdOn:new Date()});
 	}
 });
 

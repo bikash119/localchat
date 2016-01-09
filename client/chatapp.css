@@ -3,3 +3,16 @@
 	border: solid 1px;
 	height: 300px;
 }
+#messageContainer{
+	height: 60%;
+	overflow: scroll;
+}
+
+.tweetBox{
+	border: solid 1px;
+	height: 100%;
+}
+
+.messageBox{
+	width: 100%;
+}

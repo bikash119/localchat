@@ -1,9 +1,5 @@
 User = React.createClass({
 
-	propTypes:{
-		user:React.PropTypes.object.isRequired
-	},
-
 	initiatePrivateChat(event){
 		event.preventDefault();
 		Meteor.call("createPrivateMsgHanger",this.props.user,Meteor.userId());
@@ -13,7 +9,7 @@ User = React.createClass({
 	render(){
 		return(
 			<li onClick={this.initiatePrivateChat}>
-				{this.props.user.username}
+				{this.props.activeUser.user.username}
 			</li>
 		);
 	}
