@@ -21,7 +21,7 @@ TweetBox = React.createClass({
 					</div>
 					<div className="row clearfix	">
 						<div className="btn-group">
-  							<button type="button" className="btn btn-primary pull-right" onClick={this.sendMessage}>Action</button>
+  							<button type="button" className="btn btn-primary pull-right" onClick={this.sendMessage}>Send</button>
   						</div>
 					</div>
 				</div>
