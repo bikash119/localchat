@@ -11,6 +11,7 @@ MessageContainer = React.createClass({
 		let messageSubscriptionHandler = Meteor.subscribe("messages");
 		let activeUserSubscriptionHandler = Meteor.subscribe("activeUsers");
 		let showMessageFor = Session.get("currentlyCommnunicatingWith");
+
 		let messages = undefined;
 
 		if(!showMessageFor && activeUserSubscriptionHandler.ready()){
@@ -20,6 +21,10 @@ MessageContainer = React.createClass({
 			{$or:[{"recipient.userId" : showMessageFor},{"sender.userId":showMessageFor}]},
 			{$or:[{"recipient.userId" : Meteor.userId()},{"sender.userId":Meteor.userId()}]}
 			]}).fetch();
+		let publicUser = ActiveUsers.findOne({"user.userId":showMessageFor});
+		if(publicUser && publicUser.user.username=="public"){
+			messages = Messages.find({"recipient.userId" : showMessageFor}).fetch();
+		}
 		console.log(messages);
 		return{
 			messages:messages
