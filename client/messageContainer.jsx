@@ -16,7 +16,10 @@ MessageContainer = React.createClass({
 		if(!showMessageFor && activeUserSubscriptionHandler.ready()){
 			showMessageFor = ActiveUsers.findOne({"user.username":"public"}).userId;
 		}	
-		messages = Messages.find({"recipient.userId" : showMessageFor}).fetch();
+		messages = Messages.find({$and:[
+			{$or:[{"recipient.userId" : showMessageFor},{"sender.userId":showMessageFor}]},
+			{$or:[{"recipient.userId" : Meteor.userId()},{"sender.userId":Meteor.userId()}]}
+			]}).fetch();
 		console.log(messages);
 		return{
 			messages:messages

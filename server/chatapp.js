@@ -77,6 +77,13 @@ Meteor.methods({
 			email:reciever.emails[0].address
 		};
 		Messages.insert({sender:sendingUser,recipient:recipient,message:message,createdOn:new Date()});
+		console.log("Searching if the recipient"+recipient.username+ " is already in communicating with sender" + sendingUser.username);
+		let recieverPrivMsgHanger = PrivateMessageHangers.findOne({$and:[{userId:recipient.userId},{communicatingWith:{$elemMatch:{userId:sendingUser.userId}}}]});
+		if(!recieverPrivMsgHanger){
+			console.log(" Recipent is communicating with sender for first time. Creating a new message hanger for reciepent");
+			let senderActiveUser = ActiveUsers.findOne({userId:sendingUser.userId}).user;
+			PrivateMessageHangers.update({userId:recipient.userId},{$push : {communicatingWith:senderActiveUser}})
+		}
 	}
 });
 

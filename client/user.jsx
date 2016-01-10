@@ -2,7 +2,7 @@ User = React.createClass({
 
 	initiatePrivateChat(event){
 		event.preventDefault();
-		Meteor.call("createPrivateMsgHanger",this.props.user,Meteor.userId());
+		Meteor.call("createPrivateMsgHanger",this.props.activeUser.user,Meteor.userId());
 		console.log("Private chat initiated by : "+Meteor.userId() + " with "+this.props.user);
 	},
 
