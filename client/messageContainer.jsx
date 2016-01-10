@@ -20,10 +20,10 @@ MessageContainer = React.createClass({
 		messages = Messages.find({$and:[
 			{$or:[{"recipient.userId" : showMessageFor},{"sender.userId":showMessageFor}]},
 			{$or:[{"recipient.userId" : Meteor.userId()},{"sender.userId":Meteor.userId()}]}
-			]}).fetch();
+			]},{$sort:{createdOn:-1}}).fetch();
 		let publicUser = ActiveUsers.findOne({"user.userId":showMessageFor});
 		if(publicUser && publicUser.user.username=="public"){
-			messages = Messages.find({"recipient.userId" : showMessageFor}).fetch();
+			messages = Messages.find({"recipient.userId" : showMessageFor},{$sort:{createdOn:-1}}).fetch();
 		}
 		console.log(messages);
 		return{
@@ -36,7 +36,7 @@ MessageContainer = React.createClass({
 		let messagesForCurrentUser = this.data.messages;
 		if(messagesForCurrentUser){
 			return(
-				messagesForCurrentUser.map((elem)=>{return <MessageListItem key={elem._id} message={elem}/> })	
+					messagesForCurrentUser.map((elem)=>{return <MessageListItem key={elem._id} message={elem}/> })
 				);
 			}else{
 				return(<span></span>);
@@ -46,7 +46,7 @@ MessageContainer = React.createClass({
 	render(){
 		return(
 				<div className="row" id="messageContainer">
-					<ul>
+					<ul className="list-unstyled message-margin">
 						{this.renderMessages()}
 					</ul>
 				</div>
@@ -57,7 +57,7 @@ MessageContainer = React.createClass({
 MessageListItem = React.createClass({
 	render(){
 		return(
-			<p className="clearfix">{this.props.message.message}</p>
+				<li><Emojione text={this.props.message.message} className="clearfix"/></li>
 			);
 	}
 });
